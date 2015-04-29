@@ -214,6 +214,10 @@ class CaptchaWidget(Widget.TextWidget):
                                    size=10)
     # HTML page having a captcha field should never be cached.
     REQUEST.RESPONSE.setHeader('Cache-Control', 'max-age=0')
+    if not REQUEST.cookies.get(REQUEST.getHeader('HTTP_X_BALANCER_CURRENT_COOKIE')):
+      REQUEST.RESPONSE.setCookie(REQUEST.getHeader('HTTP_X_BALANCER_CURRENT_COOKIE'),
+                                  REQUEST.getHeader('HTTP_X_BALANCER_CURRENT_SERVER'),
+                                  path='/')
     return captcha_field + key_field + splitter + answer
 
   def render_view(self, field, value, REQUEST=None, render_prefix=None):
